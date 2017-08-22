@@ -245,6 +245,12 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
     return nil;
 }
 
+- (UIColor *)dzn_buttonBorderColor {
+    if (self.emptyDataSetSource && [self.emptyDataSetSource respondsToSelector:@selector(buttonBorderColorForEmptyDataSet:)]) {
+        return [self.emptyDataSetSource buttonBorderColorForEmptyDataSet:self];
+    }
+    return nil;
+}
 - (UIColor *)dzn_dataSetBackgroundColor
 {
     if (self.emptyDataSetSource && [self.emptyDataSetSource respondsToSelector:@selector(backgroundColorForEmptyDataSet:)]) {
@@ -516,6 +522,12 @@ static char const * const kEmptyDataSetView =       "emptyDataSetView";
                 [view.button setAttributedTitle:[self dzn_buttonTitleForState:UIControlStateHighlighted] forState:UIControlStateHighlighted];
                 [view.button setBackgroundImage:[self dzn_buttonBackgroundImageForState:UIControlStateNormal] forState:UIControlStateNormal];
                 [view.button setBackgroundImage:[self dzn_buttonBackgroundImageForState:UIControlStateHighlighted] forState:UIControlStateHighlighted];
+                if ([self dzn_buttonBorderColor]) {
+                    view.button.contentEdgeInsets = UIEdgeInsetsMake(8.0, 12.0, 8.0, 12.0);
+                    view.button.layer.borderWidth = 1.0;
+                    view.button.layer.cornerRadius = 4.0;
+                    view.button.layer.borderColor = [[self dzn_buttonBorderColor] CGColor];
+                }
             }
         }
         
@@ -991,8 +1003,14 @@ Class dzn_baseClassToSwizzleForTarget(id target)
             [subviewStrings addObject:@"button"];
             views[[subviewStrings lastObject]] = _button;
             
-            [self.contentView addConstraints:[NSLayoutConstraint constraintsWithVisualFormat:@"H:|-(padding@750)-[button(>=0)]-(padding@750)-|"
-                                                                                     options:0 metrics:metrics views:views]];
+            [self.contentView addConstraint:[NSLayoutConstraint constraintWithItem:_button
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                         relatedBy:NSLayoutRelationEqual
+                                                                            toItem:self.contentView
+                                                                         attribute:NSLayoutAttributeCenterX
+                                                                        multiplier:1.0
+                                                                          constant:0.0]];
+
         }
         // or removes from its superview
         else {

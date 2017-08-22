@@ -47,6 +47,10 @@ Please read this very interesting article about [*Designing For The Empty States
 This library has been designed in a way where you won't need to extend UITableView or UICollectionView class. It will still work when using UITableViewController or UICollectionViewController.
 By just conforming to DZNEmptyDataSetSource & DZNEmptyDataSetDelegate, you will be able to fully customize the content and appearance of the empty states for your application.
 
+### Changes by @tomekc
+
+* Allow setting border of the button
+* Button is now centered and not spanning across width of the screen
 
 ## Installation
 
